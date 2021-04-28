@@ -12,13 +12,18 @@ const { validateUpload } = require('./tools/validations') // Import validations
 
 const Car = require('./models/Company.service') // Import methods
 
-app.post('/', uploadSingle('provider_file'), async ({ file, body }, res) => {
+app.post('/', uploadSingle('provider_file'), async ({ file, body, wrongtype }, res) => {
+  // Validate type of file received. 
+  if (wrongtype) {
+    return res.status(406).json({ message: `Wrong file type received. Only CSV is allowed`, success: false })
+  }
+
   const data = fs.readFileSync(file.path, 'utf8') // Reads the received file
   const records = parse(data, { columns: true, skip_empty_lines: true }) // Parses the file contents to json
 
   // VALIDATIONS
   try {
-    validateUpload(body.provider_name, records)
+    validateUpload(body.provider_name, wrongtype, records)
   } catch (error) {
     return res.status(406).json({ message: error.message, success: false })
   }

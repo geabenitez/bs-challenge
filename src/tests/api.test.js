@@ -17,6 +17,16 @@ describe('POST /', () => {
     done()
   })
 
+  it('Validates filetype received', async done => {
+    const res = await request(app)
+      .post('/')
+      .field('provider_name', 'company')
+      .attach('provider_file', 'src/tests/testdata.txt')
+      .expect(406)
+    expect(res.body.message).toBe(`Wrong file type received. Only CSV is allowed`)
+    done()
+  })
+
   it('Validates at least 1 row is received', async done => {
     const res = await request(app)
       .post('/')

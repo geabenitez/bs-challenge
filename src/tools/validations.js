@@ -1,7 +1,7 @@
 const { fields } = require('./config')
 
 module.exports = {
-  validateUpload(provider_name, records) {
+  validateUpload(provider_name, wrongtype, records) {
     // Validates required field for name
     if (!provider_name) throw new Error(`provider_name field not received but required`)
 
